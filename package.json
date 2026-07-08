@@ -1,0 +1,32 @@
+{
+  "name": "clonelogin",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {
+    "start" : "node src/index.js",
+    "test" : "jest tests/auth.test.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vasconcelosousa2508-collab/EstudoBD-Login.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/vasconcelosousa2508-collab/EstudoBD-Login/issues"
+  },
+  "homepage": "https://github.com/vasconcelosousa2508-collab/EstudoBD-Login#readme",
+  "dependencies": {
+    "@libsql/client": "^0.17.4",
+    "dotenv": "^17.4.2",
+    "express": "^5.2.1"
+  },
+  "devDependencies": {
+    "jest": "^30.4.2"
+  }
+}
