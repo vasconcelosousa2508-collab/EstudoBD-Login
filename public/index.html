@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Autenticação - Turso DB</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Segoe UI', sans-serif; background: #f0f2f5; display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 20px; }
+        .container { background: white; width: 100%; max-width: 400px; padding: 30px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+        h2 { margin-bottom: 20px; color: #1a1a1a; text-align: center; }
+        .form-group { margin-bottom: 15px; }
+        label { display: block; margin-bottom: 5px; font-weight: 600; color: #4a4a4a; }
+        input { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; font-size: 16px; }
+        button { width: 100%; padding: 12px; background: #0056b3; color: white; border: none; border-radius: 4px; font-size: 16px; cursor: pointer; font-weight: bold; margin-top: 10px; }
+        button:hover { background: #004085; }
+        .switch-form { text-align: center; margin-top: 15px; font-size: 14px; color: #0056b3; cursor: pointer; }
+        .hidden { display: none; }
+        .profile-card { background: #e9ecef; padding: 15px; border-radius: 4px; margin-top: 15px; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <!-- SEÇÃO DE LOGIN -->
+    <div id="loginSection">
+        <h2>Entrar</h2>
+        <div class="form-group">
+            <label>E-mail</label>
+            <input type="email" id="loginEmail">
+        </div>
+        <div class="form-group">
+            <label>Senha</label>
+            <input type="password" id="loginSenha">
+        </div>
+        <button onclick="fazerLogin()">Entrar</button>
+        <p class="switch-form" onclick="alternarFormularios()">Não tem conta? Cadastre-se</p>
+    </div>
+
+    <!-- SEÇÃO DE CADASTRO -->
+    <div id="cadastroSection" class="hidden">
+        <h2>Criar Conta</h2>
+        <div class="form-group">
+            <label>Nome</label>
+            <input type="text" id="cadNome">
+        </div>
+        <div class="form-group">
+            <label>E-mail</label>
+            <input type="email" id="cadEmail">
+        </div>
+        <div class="form-group">
+            <label>Senha</label>
+            <input type="password" id="cadSenha">
+        </div>
+        <button onclick="cadastrar()">Salvar Dados</button>
+        <p class="switch-form" onclick="alternarFormularios()">Já tem conta? Faça Login</p>
+    </div>
+
+    <!-- SEÇÃO DE DADOS EXIBIDOS (DASHBOARD) -->
+    <div id="dashboardSection" class="hidden">
+        <h2>Bem-vindo(a)!</h2>
+        <div class="profile-card">
+            <p><strong>Nome:</strong> <span id="perfilNome"></span></p>
+            <p><strong>E-mail:</strong> <span id="perfilEmail"></span></p>
+        </div>
+        <button style="background: #dc3545;" onclick="logout()">Sair</button>
+    </div>
+</div>
+
+<script>
+    function alternarFormularios() {
+        document.getElementById('loginSection').classList.toggle('hidden');
+        document.getElementById('cadastroSection').classList.toggle('hidden');
+    }
+
+    async function cadastrar() {
+        const nome = document.getElementById('cadNome').value;
+        const email = document.getElementById('cadEmail').value;
+        const senha = document.getElementById('cadSenha').value;
+
+        const res = await fetch('/api/cadastro', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ nome, email, senha })
+        });
+        const dados = await res.json();
+
+        if(res.ok) {
+            alert(dados.message);
+            alternarFormularios();
+        } else {
+            alert("Erro: " + dados.error);
+        }
+    }
+
+    async function fazerLogin() {
+        const email = document.getElementById('loginEmail').value;
+        const senha = document.getElementById('loginSenha').value;
+
+        const res = await fetch('/api/login', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email, senha })
+        });
+        const dados = await res.json();
+
+        if(res.ok) {
+            document.getElementById('loginSection').classList.add('hidden');
+            document.getElementById('dashboardSection').classList.remove('hidden');
+            
+            // Exibe os dados do usuário logado na tela!
+            document.getElementById('perfilNome').innerText = dados.usuario.nome;
+            document.getElementById('perfilEmail').innerText = dados.usuario.email;
+        } else {
+            alert("Erro: " + dados.error);
+        }
+    }
+
+    function logout() {
+        document.getElementById('dashboardSection').classList.add('hidden');
+        document.getElementById('loginSection').classList.remove('hidden');
+        document.getElementById('loginEmail').value = '';
+        document.getElementById('loginSenha').value = '';
+    }
+</script>
+</body>
+</html>

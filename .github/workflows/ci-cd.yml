@@ -1,1 +1,22 @@
+name: Pipeline de CI
 
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  ci-testes:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 1. Clonar Repositório
+        uses: actions/checkout@v4
+      - name: 2. Configurar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+      - name: 3. Instalar Dependências
+        run: npm install
+      - name: 4. Executar Testes Automatizados
+        run: npm test
